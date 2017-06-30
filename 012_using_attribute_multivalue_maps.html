@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+
+    <!-- d3 script -->
+    <script>
+
+    // define the static data-set
+    var dataset = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 19,
+      14, 11, 22, 29, 11, 13, 12, 17, 18, 10 ];
+
+    // define the svg element attributes
+    var w = 500;
+    var h = 100;
+    var barPadding = 2;
+
+    // create the svg element
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+    // bind the data and create each svg rectangle
+    var rects = svg.selectAll("rect") // select all svg rectangles
+      .data(dataset) // bind the data
+      .enter() // on 'enter' (called for each new data item)
+      .append("rect") // create the new rectangle
+
+    /*
+    ** Instead using many separate 'attr' calls,
+    ** use D3's multivalue maps with a single
+    ** 'attr' call.
+    */
+    rects.attr({
+      x: function(d, i) { return i * (w / dataset.length); },
+      y: function(d, i) { return h - d; },
+      width: (w / dataset.length) - barPadding,
+      height: function(d, i) { return d; },
+      fill: function(d, i) { return "rgb(0, 0, " + (d*20) + ")"; }
+    });
+
+    </script>
+  </body>
+</html>
