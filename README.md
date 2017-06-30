@@ -10,7 +10,9 @@ Get the code...
 $ git clone https://github.com/markuscraig/d3-learn-by-example.git
 ```
 
-Serve the HTML files...
+Most files can be opened with a double-click.
+
+Some files use async file loading (AJAX) and need to be served by a web-server...
 
 ```shell
 $ cd d3-learn-by-example
@@ -20,8 +22,6 @@ $ python -m SimpleHTTPServer 8080
 Open the HTML files in a browser...
 
 * http://localhost:8080
-
-Most of the HTML files can be opened with a double-click (no AJAX calls being made).
 
 ## Useful Links
 

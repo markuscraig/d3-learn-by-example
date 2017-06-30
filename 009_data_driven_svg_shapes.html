@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+
+    <!-- d3 script -->
+    <script>
+
+    // define the static data-set
+    var dataset = [ 5, 10, 15, 20, 25 ];
+
+    // define the svg element attributes
+    var w = 500;
+    var h = 100;
+
+    // create the svg element
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+    // bind the data to the svg circles
+    var circles = svg.selectAll("circle") // select all svg circles
+      .data(dataset) // bind the data
+      .enter() // on 'enter' (called for each new data item)
+      .append("circle"); // create the new circle
+
+    // give each circle a dynamic position and size
+    circles.attr("cx", function(d, i) {
+        return (i * 50) + 25; // set the 'x' position
+      })
+      .attr("cy", function(d, i) {
+        return h/2; // set the 'y' position (center of svg height)
+      })
+      .attr("r", function(d, i) {
+        return d; // set the circle radius (size)
+      })
+      .attr("fill", "yellow") // set the circle fill color
+      .attr("stroke", "orange") // set the circle stroke color
+      .attr("stroke-width", function(d, i) {
+        return d/4; // dynamically set the circle stroke width
+      });
+
+    </script>
+  </body>
+</html>
