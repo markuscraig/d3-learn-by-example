@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+
+    <!-- d3 script -->
+    <script>
+
+    // define the static data-set
+    var dataset = [ 5, 10, 15, 20, 25 ];
+
+    // select all of the paragraphs and bind the data
+    var plist = d3.select("body")
+      .selectAll("p")
+      .data(dataset);
+
+    // define how we CREATE each element with new data on 'enter'
+    plist.enter()
+      .append("p") // append a 'p' paragraph dom element
+      .text(function(d) {  // set the paragraph's text content as a function
+        return "DATA: " + d;
+      });
+
+    </script>
+  </body>
+</html>
