@@ -33,11 +33,7 @@
       .enter() // on 'enter' (called for each new data item)
       .append("rect") // create the new rectangle
 
-    /*
-    ** Instead using many separate 'attr' calls,
-    ** use D3's multivalue maps plugin with a single
-    ** 'attrs' call.
-    */
+    // set the attributes for each svg reactangle
     rects.attrs({
       x: function(d, i) { return i * (w / dataset.length); },
       y: function(d, i) { return h - d; },
@@ -45,6 +41,19 @@
       height: function(d, i) { return d; },
       fill: function(d, i) { return "rgb(0, 0, " + (d*20) + ")"; }
     });
+
+    // create the text labels and set the attributes
+    svg.selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .text(function(d) {
+        return d;
+      })
+      .attrs({
+        x: function(d, i) { return i * (w / dataset.length); },
+        y: function(d) { return h - d; }
+      });
 
     </script>
   </body>
