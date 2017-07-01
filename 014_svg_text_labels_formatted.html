@@ -52,11 +52,16 @@
         return d;
       })
       .attr("x", function(d, i) {
-        return i * (w / dataset.length) + 5;
+        // calculate the x center of the rectangle bar
+        var maxbarWidth = w / dataset.length;
+        var startingX = i * maxbarWidth;
+        var barHalfWidth = (maxbarWidth - barPadding) / 2;
+        return startingX + barHalfWidth;
       })
       .attr("y", function(d) {
         return h - (d * 4) + 15;
       })
+      .attr("text-anchor", "middle") // center the text
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px")
       .attr("fill", "white");
