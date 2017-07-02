@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+
+    <!-- d3 script -->
+    <script>
+
+    /*
+    ** Create a d3 'scale' which maps an input 'domain'
+    ** to an output 'range'.  A 'scale' is used to tranform
+    ** your input data into output pixels.
+    **
+    ** The input 'domain' is the valid range of your input data.
+    ** The output 'range' is the valid range of the tranformed
+    ** output data (usually in pixels).
+    **
+    ** NOTE: D3 v3 used 'd3.scale.linear()'
+    */
+    var scale = d3.scaleLinear()
+      .domain([100, 500])
+      .range([10, 350]);
+
+    // scale some input values
+    console.log(scale(100));     // the min input value
+    console.log(scale(500));     // the max input value
+    console.log(scale(125.42));  // something in between
+    console.log(scale(420.420)); // something in between
+
+    </script>
+  </body>
+</html>
