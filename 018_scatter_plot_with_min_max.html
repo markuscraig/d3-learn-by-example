@@ -17,7 +17,7 @@
                   ];
     // define the svg element attributes
     var w = 500;
-    var h = 100;
+    var h = 200;
     var xPadding = 40; // left and right svg padding
     var yPadding = 20; // top and bottom svg padding
 
@@ -25,6 +25,9 @@
     var xScale = d3.scaleLinear()
       .domain([0, d3.max(dataset, function(d) { return d[0]; })])
       .range([xPadding, w - xPadding]);
+      // .nice() - rounds the min / max range of input domain
+      // .rangeRound() - use instead of 'range' to round all output range values
+      // .clamp() - prevents returning output 'range' values outside the given 'range'
 
     // create a 'y' dynamic scale
     var yScale = d3.scaleLinear()
