@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!-- css styles -->
+    <style>
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+      fill: blue;
+    }
+
+    </style>
+  </head>
+  <body>
+
+    <!-- d3 script -->
+    <script>
+
+    // generate a random data-set
+    var dataset = [];
+    var numDataPoints = 50;
+    var xRange = Math.random() * 5000;
+    var yRange = Math.random() * 1000;
+    for (var i=0; i < numDataPoints; i++) {
+      var x = Math.floor(Math.random() * xRange);
+      var y = Math.floor(Math.random() * yRange);
+      dataset.push([x, y]);
+    }
+
+    // define the svg element attributes
+    var w = 500;
+    var h = 300;
+    var xPadding = 40; // left and right svg padding
+    var yPadding = 20; // top and bottom svg padding
+
+    // create an 'x' dynamic scale
+    var xScale = d3.scaleLinear()
+      .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+      .range([xPadding, w - xPadding]);
+      // .nice() - rounds the min / max range of input domain
+      // .rangeRound() - use instead of 'range' to round all output range values
+      // .clamp() - prevents returning output 'range' values outside the given 'range'
+
+    // create a 'y' dynamic scale
+    var yScale = d3.scaleLinear()
+      .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+      // reverse the output y pixel range so that the y values
+      // grow from bottom-to-top (since d3's origin is top-left)
+      .range([h - yPadding, yPadding]);
+
+    // create a circle radius scale
+    var rScale = d3.scaleLinear()
+      .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+      .range([3, 8]);
+
+    // create the svg element
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+    // create each svg rectangle and set the attributes
+    var rects = svg.selectAll("circle") // select all svg circles
+      .data(dataset) // bind the data
+      .enter() // on 'enter' (called for each new data item)
+      .append("circle") // create the new circle
+      .attr("cx", function(d, i) {
+        // scale and set the circle's x position
+        return xScale(d[0]);
+      })
+      .attr("cy", function(d, i) {
+        // scale and set the circle's y position
+        return yScale(d[1]);
+      })
+      .attr("r", function(d) {
+        // scale and set the circle's radius
+        return rScale(d[1]);
+      });
+
+    /*
+    ** Remove the red labels since we have axes!
+    */
+
+    /*
+    // create labels
+    svg.selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .text(function(d, i) {
+        return d[0] + ", " + d[1];
+      })
+      .attr("x", function(d) {
+        // scale and set the text label's x position
+        return xScale(d[0]);
+      })
+      .attr("y", function(d) {
+        // scale and set the text label's y position
+        return yScale(d[1]);
+      })
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px")
+      .attr("fill", "red");
+    */
+
+    /*
+    ** Create and draw the axes. A d3 axis will render
+    ** lots of different svg elements, so we create the
+    ** axis within another svg 'g' group element. The
+    ** axis function is called last in order to render
+    ** the axis on top of the other svg elements.
+    */
+
+    // create the 'x' axis
+    var xAxis = d3.axisBottom() // set labels to appear below the axis
+      .scale(xScale) // set the scale the axis uses
+      .ticks(5); // recommend the number of ticks, but d3 auto uses balanced slices
+
+    // draw the x axis within a new svg 'g' group element
+    svg.append("g") // append an svg 'group'
+      .attr("class", "axis") // assign a css class for the group
+      .attr("transform", "translate(0," + (h - yPadding) + ")") // move to bottom of svg
+      .call(xAxis); // 'call' hands the selection ('g') to a function ('xAxis')
+
+    // create the 'y' axis
+    var yAxis = d3.axisLeft() // set labels to appear left of the axis
+      .scale(yScale) // set the scale the axis uses
+      .ticks(5); // recommend the number of ticks, but d3 auto uses balanced slices
+
+    // draw the y axis within a new svg 'g' group element
+    svg.append("g") // append an svg 'group'
+      .attr("class", "axis") // assign a css class for the group
+      .attr("transform", "translate(" + xPadding + ",0)") // move to left of svg
+      .call(yAxis); // 'call' hands the selection ('g') to a function ('yAxis')
+
+    </script>
+  </body>
+</html>
