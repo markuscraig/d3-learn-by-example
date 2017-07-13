@@ -3,29 +3,52 @@
   <head>
     <!-- load the d3 v4 javascript library -->
     <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!-- css styles -->
+    <style>
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+      fill: blue;
+    }
+
+    </style>
   </head>
   <body>
+
+    <p>Click on this paragraph to update the data-set</p>
 
     <!-- d3 script -->
     <script>
 
-    // define the static data-set
-    var dataset = [
-                    [5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
-                    [410, 12], [475, 44], [25, 67], [85, 21], [220, 88],
-                    [600, 150] // add an extra data-point to prove the chart auto-scales
-                  ];
-
     // define the svg element attributes
     var w = 500;
-    var h = 200;
+    var h = 300;
     var xPadding = 40; // left and right svg padding
     var yPadding = 20; // top and bottom svg padding
+
+    // generate a random data-set
+    var dataset = [];
+    var numDataPoints = 50;
+    var maxRange = Math.random() * 1000;
+    for (var i=0; i < numDataPoints; i++) {
+      var x = Math.floor(Math.random() * maxRange);
+      var y = Math.floor(Math.random() * maxRange);
+      dataset.push([x, y]);
+    }
 
     // create an 'x' dynamic scale
     var xScale = d3.scaleLinear()
       .domain([0, d3.max(dataset, function(d) { return d[0]; })])
-      .range([xPadding, w - xPadding]);
+      .range([xPadding, w - (xPadding * 2)]);
       // .nice() - rounds the min / max range of input domain
       // .rangeRound() - use instead of 'range' to round all output range values
       // .clamp() - prevents returning output 'range' values outside the given 'range'
@@ -40,7 +63,7 @@
     // create a circle radius scale
     var rScale = d3.scaleLinear()
       .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-      .range([5, 15]);
+      .range([3, 8]);
 
     // create the svg element
     var svg = d3.select("body")
@@ -66,6 +89,11 @@
         return rScale(d[1]);
       });
 
+    /*
+    ** Remove the red labels since we have axes!
+    */
+
+    /*
     // create labels
     svg.selectAll("text")
       .data(dataset)
@@ -85,6 +113,7 @@
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px")
       .attr("fill", "red");
+    */
 
     /*
     ** Create and draw the axes. A d3 axis will render
@@ -96,11 +125,73 @@
 
     // create the 'x' axis
     var xAxis = d3.axisBottom() // set labels to appear below the axis
-      .scale(xScale);
+      .scale(xScale) // set the scale the axis uses
+      .ticks(5); // recommend the number of ticks, but d3 auto uses balanced slices
 
     // draw the x axis within a new svg 'g' group element
     svg.append("g") // append an svg 'group'
+      .attr("class", "axis") // assign a css class for the group
+      .attr("transform", "translate(0," + (h - yPadding) + ")") // move to bottom of svg
       .call(xAxis); // 'call' hands the selection ('g') to a function ('xAxis')
+
+    // create the 'y' axis
+    var yAxis = d3.axisLeft() // set labels to appear left of the axis
+      .scale(yScale) // set the scale the axis uses
+      .ticks(5); // recommend the number of ticks, but d3 auto uses balanced slices
+
+    // draw the y axis within a new svg 'g' group element
+    svg.append("g") // append an svg 'group'
+      .attr("class", "axis") // assign a css class for the group
+      .attr("transform", "translate(" + xPadding + ",0)") // move to left of svg
+      .call(yAxis); // 'call' hands the selection ('g') to a function ('yAxis')
+
+    /*
+    ** Handle the paragraph click event
+    */
+
+    d3.select("p").on("click", function() {
+      // generate new range data-set values
+      var numValues = dataset.length;
+			var maxRange = Math.random() * 1000;
+			dataset = [];
+			for (var i = 0; i < numValues; i++) {
+				var x = Math.floor(Math.random() * maxRange);
+				var y = Math.floor(Math.random() * maxRange);
+				dataset.push([x, y]);
+			}
+
+      // update the scale domains
+      xScale.domain([0, d3.max(dataset, function(d) { return d[0]; })]);
+      yScale.domain([0, d3.max(dataset, function(d) { return d[1]; })]);
+      rScale.domain([0, d3.max(dataset, function(d) { return d[1]; })]);
+
+      // update the x-axis
+      svg.select(".x.axis")
+        .transition()
+        .duration(1000)
+        .call(xAxis);
+
+      // update the x-axis
+      svg.select(".y.axis")
+        .transition()
+        .duration(1000)
+        .call(yAxis);
+
+      // update all of the circle elements
+      svg.selectAll("circle")
+        .data(dataset) // rebind the new data-set ot the existing elements
+        .transition()
+        .duration(1000)
+        .attr("cx", function(d) {
+          return xScale(d[0]);
+        })
+        .attr("cy", function(d) {
+          return yScale(d[1]);
+        })
+        .attr("r", function(d) {
+          return rScale(d[1]);
+        });
+    });
 
     </script>
   </body>

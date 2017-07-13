@@ -48,7 +48,7 @@
       .attr("height", h);
 
     // create each svg rectangle and set the attributes
-    var rects = svg.selectAll("circle") // select all svg circles
+    svg.selectAll("circle") // select all svg circles
       .data(dataset) // bind the data
       .enter() // on 'enter' (called for each new data item)
       .append("circle") // create the new circle
