@@ -195,13 +195,9 @@
         .attr("r", function(d) {
           return rScale(d[1]);
         })
-        .on("end", function(d, i) {
-          // start the next transition after the previous one ended
-          d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("fill", "black");
-        });
+        .transition() // define the 2nd chained transition
+        .duration(500)
+        .attr("fill", "black");
     });
 
     </script>
