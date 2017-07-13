@@ -182,6 +182,10 @@
         .data(dataset) // rebind the new data-set ot the existing elements
         .transition()
         .duration(1000)
+        .on("start", function(d, i) {
+          d3.select(this)
+            .attr("fill", "magenta");
+        })
         .attr("cx", function(d) {
           return xScale(d[0]);
         })
@@ -190,6 +194,13 @@
         })
         .attr("r", function(d) {
           return rScale(d[1]);
+        })
+        .on("end", function(d, i) {
+          // start the next transition after the previous one ended
+          d3.select(this)
+            .transition()
+            .duration(500)
+            .attr("fill", "black");
         });
     });
 
