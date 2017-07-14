@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load the d3 v4 javascript library -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!-- load the d3 v4 easing transition definitions -->
+    <script src="https://d3js.org/d3-ease.v1.min.js"></script>
+  </head>
+  <body>
+    <!-- add paragraph for simple click event interaction -->
+    <p>Click on this text to add another data value</p>
+
+    <!-- d3 script -->
+    <script>
+
+    // define the static data-set
+    var dataset = [ 11, 7, 5, 22, 11, 8, 25, 14, 23, 19,
+      14, 11, 22, 21, 11, 13, 12, 17, 18, 10 ];
+
+    // define the svg element attributes
+    var w = 600;
+    var h = 250;
+
+    // create band x-axis scale for positioning the bars
+    var xScale = d3.scaleBand()
+      .domain(d3.range(dataset.length)) // set the input domain to [0, 1, 2, ..., N-1]
+      .rangeRound([0, w]) // set the total width as the output range
+      .padding(0.05); // set the spacing between each band (5% of width of each band)
+
+    // create the linear y-axis scale for the bar height
+    var yScale = d3.scaleLinear()
+      .domain([0, d3.max(dataset)])
+      .range([0, h]);
+
+    // create the svg element
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+    // create each svg rectangle and set the attributes
+    svg.selectAll("rect") // select all svg rectangles
+      .data(dataset) // bind the data
+      .enter() // on 'enter' (called for each new data item)
+      .append("rect") // create the new rectangle
+      .attr("x", function(d, i) {
+        return xScale(i);
+      })
+      .attr("y", function(d, i) {
+        return h - yScale(d); // position to grow from the bottom
+      })
+      .attr("width", xScale.bandwidth()) // get and set the band's width
+      .attr("height", function(d, i) {
+        return yScale(d);
+      })
+      .attr("fill", function(d, i) {
+        return "rgb(0, 0, " + (d*20) + ")";
+      });
+
+    // create the text labels and set the attributes
+    svg.selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .text(function(d) {
+        return d;
+      })
+      .attr("x", function(d, i) {
+        // calculate the x center of the rectangle bar
+        var startingX = xScale(i);
+        var barWidth = xScale.bandwidth();
+        return startingX + (barWidth / 2);
+      })
+      .attr("y", function(d) {
+        return h - yScale(d) + 15;
+      })
+      .attr("text-anchor", "middle") // center the text
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px")
+      .attr("fill", "white");
+
+    // listen to click events on the paragraph
+    d3.select("p").on("click", function() {
+      // add one value to the data-set
+      var maxValue = 25;
+      var newValue = Math.floor(Math.random() * maxValue);
+      dataset.push(newValue);
+
+      // update the input domain scales
+      xScale.domain(d3.range(dataset.length));
+      yScale.domain([0, d3.max(dataset)]);
+
+      // select all of the bars and rebind the data
+      var bars = svg.selectAll("rect")
+        .data(dataset);
+
+      // set the 'enter' selection within the 'bars' update selection
+      bars.enter()
+        .append("rect")
+        .attr("x", w) // add the next new rect to the right of the svg
+        .attr("y", function(d) {
+          return h - yScale(d);
+        })
+        .attr("width", xScale.bandwidth())
+        .attr("height", function(d) {
+          return yScale(d);
+        })
+        .attr("fill", function(d) {
+          return "rgb(0, 0, " + Math.round(d * 10) + ")";
+        });
+
+      // update each bar's position and size
+      bars.transition()
+        .duration(500)
+        .attr("x", function(d, i) {
+          return xScale(i);
+        })
+        .attr("y", function(d) {
+          return h - yScale(d);
+        })
+        .attr("width", xScale.bandwidth())
+        .attr("height", function(d) {
+          return yScale(d);
+        });
+
+      // bind the new values to the existing rectangles and update the attributes
+      svg.selectAll("text")
+        .data(dataset)
+        .transition() // tell d3 to interpolate between updated attribute values
+        .duration(500) // transition (interpolate) over a 1-sec duration (default 250ms)
+        .ease(d3.easeQuad) // set easing to quad
+        //.ease(d3.easeBounce) // set the easing to bounce
+        // .ease(d3.easeElastic) // set easing to elastic
+        // .ease(d3.easeLinear) // set easing to linear
+        // .ease(d3.easeSin) // set easing to sin
+        // .ease(d3.easeCubic) // set easing to cubic
+        // .ease(d3.easePoly) // set easing to poly
+        // .ease(d3.easeCircle) // set easing to circle
+        // .ease(d3.easeExp) // set easing to exp
+        // .ease(d3.easeBack) // set easing to back
+        .text(function(d) {
+          return d;
+        })
+        .attr("x", function(d, i) {
+          return xScale(i) + (xScale.bandwidth() / 2);
+        })
+        .attr("y", function(d, i) {
+          return h - yScale(d) + 15;
+        });
+
+      console.log("CLICK!");
+    });
+
+    </script>
+  </body>
+</html>
